@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+import os
+import sys
+import json
+
+BASE = 'http://mrshoe.org:8081'
+PRINT_HEADERS = True
+VERBOSE = True
+TIME = True
+
+method = sys.argv[1].strip().upper()
+url = sys.argv[2].strip()
+
+args = []
+
+if PRINT_HEADERS:
+    args.append('-i')
+if VERBOSE:
+    args.append('-v')
+
+time = 'time ' if TIME else ''
+
+if method in ('PUT', 'POST'):
+    args.append('-H "Content-Type: application/json"')
+elif method == 'HEAD':
+    args.append('-I')
+
+print sys.argv
+
+data = sys.argv[3].strip() if len(sys.argv) > 3 else ''
+if data:
+    d = json.loads(data)
+    args.append('-d \'%s\'' % data)
+
+os.system('%scurl %s -X %s %s%s' % (time, ' '.join(args), method, BASE, url))
